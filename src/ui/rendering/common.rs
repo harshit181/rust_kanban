@@ -334,7 +334,16 @@ pub fn render_body(
             });
             rect.render_stateful_widget(scrollbar, scrollbar_area, &mut scrollbar_state);
         };
-        for (card_index, card_id) in board_cards.iter().enumerate() {
+        let max_visible_board_cards: Vec<_> =
+            if board_cards.len() > app.config.no_of_cards_to_show.into() {
+                board_cards
+                    .iter()
+                    .take(app.config.no_of_cards_to_show.into())
+                    .collect()
+            } else {
+                board_cards.iter().collect()
+            };
+        for (card_index, card_id) in max_visible_board_cards.into_iter().enumerate() {
             if app.state.hovered_card.is_some()
                 && app.state.card_drag_mode
                 && app.state.hovered_card.unwrap().1 == *card_id
